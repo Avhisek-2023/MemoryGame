@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image-Matching</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #184119eb;
+        }
+
+        .box {
+            width: 80%;
+            max-width: 500px;
+            margin: 150px auto;
+            background-color: #296b2aeb;
+            border: 1px solid black;
+        }
+
+        td {
+            width: 80px;
+            height: 65px;
+            border: 5px solid #152719b3;
+            transition: 1s all ease-in-out;
+
+        }
+
+        .backGreen{
+            background-color: #2b8311;
+        }
+
+        .backGreen img{
+            opacity: 0;
+        }
+
+        .activeRotate{
+
+            transform: rotateY(360deg);
+
+        }
+        .boxMatch{
+            pointer-events: none;
+        }
+        .sr-only{
+            visibility: hidden;
+        }
+        @media screen and (max-width:480px){
+            .box {
+                width: 100%;
+                max-width: 500px;
+                margin: 110px auto;
+                background-color: #296b2aeb;
+                border: 3px solid black;
+            }
+            td{
+
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="box">
+            <h1 class="fs-1 fw-bold text-center text-light mb-3 mt-3">IMAGE MATCHING </h1>
+            <table style="margin: 10px auto;text-align: center;">
+                <tr>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                </tr>
+                <tr>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                </tr>
+                <tr>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                </tr>
+                <tr>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                    <td class="hidden"></td>
+                </tr>
+                <img src="" alt="">
+            </table>
+            <h1 class="text-center" id="move"></h1>
+            <h1 class="text-center sr-only mb-2" id="winZone2">You Win</h1>
+    <div class="text-center sr-only mb-2" id="winZone"><button  class="btn btn-success" id="winZone" onclick="playAgain();">Play Again</button></div>
+        </div>
+    </div>
+    <script>
+        const winZone = document.getElementById("winZone");
+        const winZone2 = document.getElementById("winZone2");
+        const move = document.getElementById('move');
+        console.log(winZone);
+        let img = "";
+        const arr = ["../images/fake-smile.jpg", "../images/smile-face.png", "../images/quiz-logo.png","../images/anime2.jpg","../images/anime3.jpg","../images/anime4.jpg","../images/anime5.jpg","../images/anime6.jpg",];
+        var arr1 = [];
+        var arr2 =[];
+        var k = 0;
+        var data = [0, 1, 2, 3, 4, 5, 6, 7, 8,9,10,11,12,13,14,15];
+        var moves = 0;
+        copyArray();
+
+        function copyArray() {
+            for (i = 0; i < arr.length; i++) {
+                arr1[i] = arr[i];
+                arr1[i+arr.length] = arr[i];
+            }
+
+        shuffleData();
+        // return;
+        }
+        function playAgain()
+        {
+            winZone.classList.add('sr-only');
+            winZone2.classList.add('sr-only');
+            let boxes = document.querySelectorAll('.hidden');
+            console.log(boxes);
+            moves = 0;
+            boxes.forEach((e)=>{
+                e.classList.remove('boxMatch');
+            })
+            shuffleData();
+        }
+        function callWin() {
+            winZone.classList.remove('sr-only');
+            winZone2.classList.remove('sr-only');
+        }
+        function shuffleArr1() {
+            var count = 0;
+            console.log(JSON.parse(JSON.stringify(arr1)));
+
+            arr2 = JSON.parse(JSON.stringify(arr1))
+            for (k = 0; k < data.length; k++) {
+                arr1[k] = arr2[data[k]];
+            }
+            console.log(arr1);
+            // return;
+            boxes();
+        }
+        function boxes(){
+            let boxes = document.querySelectorAll('.hidden');
+
+        for (i = 0; i < boxes.length; i++) {
+            boxes[i].innerHTML = `<img src="${arr1[i]}" width="80px" height="65px"> `;
+            boxes[i].classList.add('backGreen');
+        }
+        boxes.forEach(e=>{
+            e.addEventListener('click',()=>{
+                e.classList.remove('backGreen');
+                e.classList.add('activeRotate');
+                moves++;
+                move.innerHTML = "Attempt " + moves;
+                setTimeout(() => {
+                    if(document.querySelectorAll('.activeRotate').length > 1 )
+                    {
+                        if(document.querySelectorAll('.activeRotate')[0].innerHTML == document.querySelectorAll('.activeRotate')[1].innerHTML)
+                        {
+                            console.log(document.querySelectorAll('.activeRotate'));
+                            document.querySelectorAll('.activeRotate')[0].classList.add('boxMatch');
+                            document.querySelectorAll('.activeRotate')[1].classList.add('boxMatch');
+                            document.querySelectorAll('.activeRotate')[0].classList.remove('activeRotate');
+                            document.querySelectorAll('.activeRotate')[0].classList.remove('activeRotate');
+                            if(document.querySelectorAll('.boxMatch').length === data.length)
+                            {
+                                callWin();
+                            }
+                            }
+                        else
+                        {
+                            document.querySelectorAll('.activeRotate')[0].classList.add('backGreen');
+                            document.querySelectorAll('.activeRotate')[0].classList.remove('activeRotate');
+                            document.querySelectorAll('.activeRotate')[0].classList.add('backGreen');
+                            document.querySelectorAll('.activeRotate')[0].classList.remove('activeRotate');
+                        }
+                    }
+
+                }, 500);
+                console.log(e.target);
+            })
+        });
+        }
+
+
+        function shuffleData() {
+
+            var i = 0,
+                t;
+            while (i < 15) {
+                let value = Math.floor(Math.random() * 15);
+                t = data[i];
+                data[i] = data[value];
+                data[value] = t;
+                i++;
+            }
+
+        shuffleArr1();
+        }
+    </script>
+</body>
+
+</html>
